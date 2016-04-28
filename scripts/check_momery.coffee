@@ -1,14 +1,18 @@
+# Description:
+#   Allows hubot to run commands using chef/knife.
+#
+
+exec = require('child_process').exec
+
+execCommand = (msg, cmd) ->
+  exec cmd, (error, stdout, stderr) ->
+    msg.send error
+    msg.send stdout
+    msg.send stderr
+
 module.exports = (robot) ->
- robot.respond /memory( (.+))?/i, (msg) ->
+ robot.respond /file list/i, (msg) ->
     q = msg.match[1]
-    @exec = require('child_process').exec
-    command = "top -b -n 1 "
-    if (!!q && q.length > 0)
-      command = command + ' | grep "' + q.match(/[^_\W]+/g).join(' ') + '"'
-
+    command = 'ls'
     msg.send "Memory usage:"
-
-    @exec command, (error, stdout, stderr) ->
-      msg.send error
-      msg.send stdout
-      msg.send stderr
+    execCommand msg, command
